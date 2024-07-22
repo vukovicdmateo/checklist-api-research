@@ -1,0 +1,22 @@
+{
+  "name": "checklist-api-research",
+  "version": "1.0.0",
+  "description": "The purpose of this repository is to analyze the Book \r \"API with Node.js, Express and Prisma\" by Gustavo Morales.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "cross-env NODE_ENV=development node --watch index",
+    "start": "cross-env NODE_ENV=production node index",
+    "test": "cross-env NODE_ENV=test vitest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "vitest": "^2.0.4"
+  },
+  "dependencies": {
+    "cross-env": "^7.0.3",
+    "dotenv": "^16.4.5"
+  }
+}
