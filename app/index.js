@@ -1,12 +1,13 @@
 import express from 'express';
 
+import { router as api } from './api/v1/index.js';
+
 export const app = express();
 
-app.get('/', (_req, res) => {
-  res.json({
-    message: 'Hello world!',
-  });
-});
+app.use(express.json());
+
+app.use('/api/v1', api);
+app.use('/api', api);
 
 app.use((req, res, next) => {
   next({
