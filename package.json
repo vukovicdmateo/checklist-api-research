@@ -6,16 +6,19 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development node --watch index",
     "start": "cross-env NODE_ENV=production node index",
-    "test": "cross-env NODE_ENV=test vitest"
+    "test": "cross-env NODE_ENV=test vitest",
+    "generate": "prisma generate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "module",
   "devDependencies": {
+    "prisma": "^5.17.0",
     "vitest": "^2.0.4"
   },
   "dependencies": {
+    "@prisma/client": "^5.17.0",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "express": "^4.19.2"

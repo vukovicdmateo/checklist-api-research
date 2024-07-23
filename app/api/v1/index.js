@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { router as todos } from './todos/index.js';
+import { router as todos } from './todos/routes.js';
 
 export const router = Router();
 
