@@ -33,6 +33,13 @@ export const all = async (req, res, next) => {
         orderBy: {
           [orderBy]: direction,
         },
+        include: {
+          user: {
+            select: {
+              name: true,
+            },
+          },
+        },
       }),
       prisma.tODO.count(),
     ]);
