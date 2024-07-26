@@ -25,6 +25,8 @@ export const all = async (req, res, next) => {
     ...query,
   });
 
+  const { groupId } = params;
+
   try {
     const [data, total] = await Promise.all([
       prisma.tODO.findMany({
@@ -40,8 +42,15 @@ export const all = async (req, res, next) => {
             },
           },
         },
+        where: {
+          groupId,
+        },
       }),
-      prisma.tODO.count(),
+      prisma.tODO.count({
+        where: {
+          groupId,
+        },
+      }),
     ]);
 
     res.json({

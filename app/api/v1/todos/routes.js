@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 import * as controller from './controller.js';
 
-export const router = Router();
+export const router = Router({ mergeParams: true });
 
 router.route('/').post(controller.create).get(controller.all);
 
