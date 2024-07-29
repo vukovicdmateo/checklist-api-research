@@ -1,15 +1,68 @@
 import { prisma } from '../../../database.js';
 import { parsePaginationParams, parseSortParams } from '../../../utils.js';
-import { fields } from './model.js';
+import { encryptPassword, fields, verifyPassword } from './model.js';
 
-export const create = async (req, res, next) => {
+export const signup = async (req, res, next) => {
   const { body = {} } = req;
 
   try {
-    const data = await prisma.user.create({ data: body });
+    const password = await encryptPassword(body.password);
+    const data = await prisma.user.create({
+      data: {
+        ...body,
+        password,
+      },
+      select: {
+        name: true,
+        email: true,
+      },
+    });
 
     res.json({
       data,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const signin = async (req, res, next) => {
+  const { body = {} } = req;
+  const { email, password } = body;
+
+  try {
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+      select: {
+        name: true,
+        email: true,
+        password: true,
+      },
+    });
+
+    if (!user) {
+      return next({
+        status: 404,
+        message: 'Invalid email or password',
+      });
+    }
+
+    const passwordMatch = await verifyPassword(password, user.password);
+
+    if (!passwordMatch) {
+      return next({
+        status: 400,
+        message: 'Invalid email or password',
+      });
+    }
+
+    res.json({
+      data: {
+        ...user,
+        password: undefined,
+      },
     });
   } catch (error) {
     next(error);
