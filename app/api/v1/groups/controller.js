@@ -4,9 +4,17 @@ import { fields } from './model.js';
 
 export const create = async (req, res, next) => {
   const { body = {} } = req;
+  const { locals = {} } = res;
+  const { decoded = {} } = locals;
+  const { id: userId } = decoded;
 
   try {
-    const data = await prisma.group.create({ data: body });
+    const data = await prisma.group.create({
+      data: {
+        ...body,
+        userId,
+      },
+    });
 
     res.json({
       data,
