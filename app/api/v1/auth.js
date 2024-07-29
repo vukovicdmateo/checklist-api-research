@@ -37,3 +37,40 @@ export const auth = (req, res, next) => {
     }
   });
 };
+
+export const me = (req, res, next) => {
+  const { params = {} } = req;
+  const { id } = params;
+
+  const { locals = {} } = res;
+  const { decoded = {} } = locals;
+  const { id: userId } = decoded;
+
+  if (userId !== id) {
+    next({
+      message: 'Forbidden',
+      status: 403,
+    });
+  } else {
+    next();
+  }
+};
+
+export const owner = (req, res, next) => {
+  const { locals = {} } = res;
+  const { decoded = {} } = locals;
+  const { id: userId } = decoded;
+
+  const { data = {} } = locals;
+
+  const { userId: ownerId } = data;
+
+  if (userId !== ownerId) {
+    next({
+      message: 'Forbidden',
+      status: 403,
+    });
+  } else {
+    next();
+  }
+};

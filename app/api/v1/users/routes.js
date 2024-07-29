@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import * as controller from './controller.js';
-import { auth } from '../auth.js';
+import { auth, me } from '../auth.js';
 
 export const router = Router();
 
@@ -14,6 +14,6 @@ router.param('id', controller.id);
 
 router
   .route('/:id')
-  .get(auth, controller.read)
-  .put(auth, controller.update)
-  .delete(auth, controller.remove);
+  .get(auth, me, controller.read)
+  .put(auth, me, controller.update)
+  .delete(auth, me, controller.remove);
