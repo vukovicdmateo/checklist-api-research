@@ -3,6 +3,7 @@ import { parsePaginationParams, parseSortParams } from '../../../utils.js';
 import {
   encryptPassword,
   fields,
+  LoginSchema,
   UserSchema,
   verifyPassword,
 } from './model.js';
@@ -44,9 +45,20 @@ export const signup = async (req, res, next) => {
 
 export const signin = async (req, res, next) => {
   const { body = {} } = req;
-  const { email, password } = body;
 
   try {
+    const { success, error, data } = await LoginSchema.safeParseAsync(body);
+
+    if (!success) {
+      return next({
+        message: 'Validation error',
+        status: 400,
+        error,
+      });
+    }
+
+    const { email, password } = data;
+
     const user = await prisma.user.findUnique({
       where: {
         email,
@@ -166,18 +178,32 @@ export const update = async (req, res, next) => {
   const { id } = params;
 
   try {
-    const data = await prisma.user.update({
+    const { success, error, data } = await UserSchema.safeParseAsync(body);
+
+    if (!success) {
+      return next({
+        message: 'Validation error',
+        status: 400,
+        error,
+      });
+    }
+
+    const user = await prisma.user.update({
       where: {
         id,
       },
       data: {
-        ...body,
+        ...data,
         updatedAt: new Date(),
+      },
+      select: {
+        name: true,
+        email: true,
       },
     });
 
     res.json({
-      data,
+      data: user,
     });
   } catch (error) {
     next(error);

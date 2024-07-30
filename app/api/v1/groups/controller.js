@@ -1,6 +1,6 @@
 import { prisma } from '../../../database.js';
 import { parsePaginationParams, parseSortParams } from '../../../utils.js';
-import { fields } from './model.js';
+import { GroupSchema, fields } from './model.js';
 
 export const create = async (req, res, next) => {
   const { body = {} } = req;
@@ -9,15 +9,25 @@ export const create = async (req, res, next) => {
   const { id: userId } = decoded;
 
   try {
-    const data = await prisma.group.create({
+    const { success, error, data } = await GroupSchema.safeParseAsync(body);
+
+    if (!success) {
+      return next({
+        message: 'Validation error',
+        status: 400,
+        error,
+      });
+    }
+
+    const group = await prisma.group.create({
       data: {
-        ...body,
+        ...data,
         userId,
       },
     });
 
     res.json({
-      data,
+      data: group,
     });
   } catch (error) {
     next(error);
@@ -106,18 +116,37 @@ export const update = async (req, res, next) => {
   const { id } = params;
 
   try {
-    const data = await prisma.group.update({
+    const { success, error, data } = await GroupSchema.partial().safeParseAsync(
+      body
+    );
+
+    if (!success) {
+      return next({
+        message: 'Validation error',
+        status: 400,
+        error,
+      });
+    }
+
+    const group = await prisma.group.update({
       where: {
         id,
       },
       data: {
-        ...body,
+        ...data,
         updatedAt: new Date(),
+      },
+      include: {
+        _count: {
+          select: {
+            todos: true,
+          },
+        },
       },
     });
 
     res.json({
-      data,
+      data: group,
     });
   } catch (error) {
     next(error);
