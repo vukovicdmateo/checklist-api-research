@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development node --watch index",
     "start": "cross-env NODE_ENV=production node index",
-    "test": "cross-env NODE_ENV=test vitest",
+    "pretest": "dotenv -e .env.test -- cross-env NODE_ENV=test npx prisma db push",
+    "test": "dotenv -e .env.test -- cross-env NODE_ENV=test vitest",
     "generate": "prisma generate"
   },
   "keywords": [],
@@ -15,6 +16,7 @@
   "type": "module",
   "devDependencies": {
     "prisma": "^5.17.0",
+    "supertest": "^7.0.0",
     "vitest": "^2.0.4"
   },
   "dependencies": {
@@ -23,6 +25,7 @@
     "cors": "^2.8.5",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
+    "dotenv-cli": "^7.4.2",
     "express": "^4.19.2",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
