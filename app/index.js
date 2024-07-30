@@ -2,8 +2,10 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import cors from 'cors';
 import helmet from 'helmet';
+import swaggerUI from 'swagger-ui-express';
 
 import { router as api } from './api/v1/index.js';
+import { swaggerDefinition } from './api/v1/docs.js';
 import { HTTPlogger, logger } from './logger.js';
 
 export const app = express();
@@ -21,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 // Log HTTP Requests
-app.use(HTTPlogger);
+// app.use(HTTPlogger);
 
 // CORS
 app.use(cors());
@@ -31,6 +33,9 @@ app.use(helmet());
 
 app.use('/api/v1', api);
 app.use('/api', api);
+
+// DOCS
+app.use('/api/v1/docs', swaggerUI.serve, swaggerUI.setup(swaggerDefinition));
 
 app.use((req, res, next) => {
   next({

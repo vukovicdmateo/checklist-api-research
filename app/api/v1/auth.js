@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { RateLimiterMemory } from 'rate-limiter-flexible';
 
-import { configuration } from '../../config';
+import { configuration } from '../../config.js';
 
 const { token } = configuration;
 const { secret, expires } = token;
