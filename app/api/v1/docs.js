@@ -1,4 +1,5 @@
 import merge from 'lodash/merge.js';
+import { todoDefiniton } from './todos/docs.js';
 
 export const swaggerDefinition = merge(
   {
@@ -13,5 +14,5 @@ export const swaggerDefinition = merge(
       },
     ],
   },
-  {}
+  todoDefiniton
 );

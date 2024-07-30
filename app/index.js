@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 // Log HTTP Requests
-// app.use(HTTPlogger);
+app.use(HTTPlogger);
 
 // CORS
 app.use(cors());
