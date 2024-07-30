@@ -1,9 +1,27 @@
 import jwt from 'jsonwebtoken';
+import { RateLimiterMemory } from 'rate-limiter-flexible';
 
 import { configuration } from '../../config';
 
 const { token } = configuration;
 const { secret, expires } = token;
+
+const limiter = new RateLimiterMemory({
+  points: 5,
+  duration: 1,
+});
+
+export const limit = async (req, res, next) => {
+  try {
+    await limiter.consume(req.ip, 1);
+    next();
+  } catch (error) {
+    next({
+      message: 'Too many requests',
+      status: 429,
+    });
+  }
+};
 
 export const signToken = (payload, expiresIn = expires) => {
   jwt.sign(payload, secret, {

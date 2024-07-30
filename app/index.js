@@ -1,5 +1,7 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
+import cors from 'cors';
+import helmet from 'helmet';
 
 import { router as api } from './api/v1/index.js';
 import { HTTPlogger, logger } from './logger.js';
@@ -20,6 +22,12 @@ app.use((req, res, next) => {
 
 // Log HTTP Requests
 app.use(HTTPlogger);
+
+// CORS
+app.use(cors());
+
+// Helmet
+app.use(helmet());
 
 app.use('/api/v1', api);
 app.use('/api', api);
