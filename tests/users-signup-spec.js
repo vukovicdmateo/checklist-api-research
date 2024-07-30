@@ -1,8 +1,10 @@
 import request from 'supertest';
 
 import { app } from '../app/index';
-import { beforeAll, beforeEach, describe, expect } from 'vitest';
+import { beforeEach, describe, expect } from 'vitest';
 import { resetDB } from './helpers/reset-db';
+import { generateUser } from './fixtures/users';
+import { generateTodo } from './fixtures//todos';
 
 describe('Users Sign Up', () => {
   beforeEach(async () => {
@@ -12,10 +14,13 @@ describe('Users Sign Up', () => {
   test('signed successfully', async () => {
     const agent = request(app);
 
+    const { name, email, password } = generateUser();
+    const { title, description, completed, dueDate } = generateTodo();
+
     const body = {
-      name: 'Mateo',
-      email: 'mateo@test.com',
-      password: '12345678',
+      name,
+      email,
+      password,
     };
 
     const signup = await agent.post('/api/users/signup').send(body);
@@ -33,7 +38,10 @@ describe('Users Sign Up', () => {
     const todo = await agent
       .post('/api/todos')
       .send({
-        title: 'Buy Milk',
+        title,
+        description,
+        completed,
+        dueDate,
       })
       .set('Authorization', `Bearer ${token}`);
 
