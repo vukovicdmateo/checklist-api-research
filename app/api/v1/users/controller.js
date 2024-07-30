@@ -1,16 +1,31 @@
 import { prisma } from '../../../database.js';
 import { parsePaginationParams, parseSortParams } from '../../../utils.js';
-import { encryptPassword, fields, verifyPassword } from './model.js';
+import {
+  encryptPassword,
+  fields,
+  UserSchema,
+  verifyPassword,
+} from './model.js';
 import { signToken } from '../auth.js';
 
 export const signup = async (req, res, next) => {
   const { body = {} } = req;
 
   try {
-    const password = await encryptPassword(body.password);
-    const data = await prisma.user.create({
+    const { success, error, data } = await UserSchema.safeParseAsync(body);
+
+    if (!success) {
+      return next({
+        message: 'Validation error',
+        status: 400,
+        error,
+      });
+    }
+
+    const password = await encryptPassword(data.password);
+    const user = await prisma.user.create({
       data: {
-        ...body,
+        ...data,
         password,
       },
       select: {
@@ -20,7 +35,7 @@ export const signup = async (req, res, next) => {
     });
 
     res.json({
-      data,
+      data: user,
     });
   } catch (error) {
     next(error);

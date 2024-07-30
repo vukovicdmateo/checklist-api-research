@@ -18,13 +18,14 @@ app.use((req, res, next) => {
 
 // Error handler
 app.use((err, req, res, next) => {
-  const { status = 500, message } = err;
+  const { status = 500, message, error } = err;
   res.status(status);
 
   res.json({
     error: {
       status,
       message,
+      error,
     },
   });
 });

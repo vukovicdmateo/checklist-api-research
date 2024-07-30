@@ -1,10 +1,17 @@
 import { hash, compare } from 'bcrypt';
+import { z } from 'zod';
+
+export const UserSchema = z
+  .object({
+    name: z.string().trim(),
+    email: z.string().trim().email().toLowerCase(),
+    email: z.string().trim().min(6).max(16),
+  })
+  .strict();
 
 export const fields = [
+  ...Object.keys(UserSchema.shape),
   'id',
-  'name',
-  'email',
-  'password',
   'createdAt',
   'updatedAt',
 ];

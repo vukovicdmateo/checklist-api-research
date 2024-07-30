@@ -1,6 +1,6 @@
 import { prisma } from '../../../database.js';
 import { parsePaginationParams, parseSortParams } from '../../../utils.js';
-import { fields } from './model.js';
+import { TodoSchema, fields } from './model.js';
 
 export const create = async (req, res, next) => {
   const { body = {} } = req;
@@ -9,15 +9,25 @@ export const create = async (req, res, next) => {
   const { id: userId } = decoded;
 
   try {
-    const data = await prisma.tODO.create({
+    const { success, error, data } = await TodoSchema.safeParseAsync(body);
+
+    if (!success) {
+      return next({
+        message: 'Validation error',
+        status: 400,
+        error,
+      });
+    }
+
+    const todo = await prisma.tODO.create({
       data: {
-        ...body,
+        ...data,
         userId,
       },
     });
 
     res.json({
-      data,
+      data: todo,
     });
   } catch (error) {
     next(error);
@@ -115,18 +125,37 @@ export const update = async (req, res, next) => {
   const { id } = params;
 
   try {
-    const data = await prisma.tODO.update({
+    const { success, error, data } = await TodoSchema.partial().safeParseAsync(
+      body
+    );
+
+    if (!success) {
+      return next({
+        message: 'Validation error',
+        status: 400,
+        error,
+      });
+    }
+
+    const todo = await prisma.tODO.update({
       where: {
         id,
       },
       data: {
-        ...body,
+        ...data,
         updatedAt: new Date(),
+      },
+      include: {
+        user: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
     res.json({
-      data,
+      data: todo,
     });
   } catch (error) {
     next(error);
