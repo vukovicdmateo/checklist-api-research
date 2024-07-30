@@ -5,7 +5,7 @@ export const UserSchema = z
   .object({
     name: z.string().trim(),
     email: z.string().trim().email().toLowerCase(),
-    email: z.string().trim().min(6).max(16),
+    password: z.string().trim().min(6).max(16),
   })
   .strict();
 
